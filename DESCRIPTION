@@ -1,0 +1,15 @@
+Package: GeneSetBagging
+Type: Package
+Title: Implements gene set bagging algorithm
+Version: 1.0
+Date: 2013-01-15
+Author: Andrew Jaffe
+Depends:
+    limma
+URL: Forthcoming
+Maintainer: Andrew Jaffe <andrewejaffe@gmail.com>
+Description: Performs gene set bagging algorithm for estimating the replication
+    proportion in gene set analysis
+License: GPL-3
+Collate:
+    'GeneSetBagging.R'
