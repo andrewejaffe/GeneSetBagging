@@ -1,7 +1,7 @@
 ###############
 # gene set bagging
 # andrew jaffe
-# 1/14/2012
+# updated 10/9/2013
 ###########
 
 
@@ -10,7 +10,8 @@
 #' @param nullp indexes pertaining to set (rows) by bootstrap number (columns) 
 #' @param alpha desired significance for the replication proportion
 #' @return numeric vector giving the replication proportion for each gene set
-makeR = function(nullp, alpha=0.05) 	rowMeans(nullp < alpha)
+#' @export
+makeR = function(nullp, alpha=0.05) rowMeans(nullp < alpha)
 
 
 #' Creates bagging indices across all iterations
@@ -20,6 +21,7 @@ makeR = function(nullp, alpha=0.05) 	rowMeans(nullp < alpha)
 #' @return number of subjects by number of bagging iterations matrix
 #' @examples
 #' prepBag(rep(1:2,each=10), 10) 
+#' @export
 prepBag = function(coi,B) {
 	oIndexes = split(1:length(coi), coi)
 	tmp = lapply(oIndexes, function(x) replicate(B, sample(x, replace=TRUE)))
@@ -41,9 +43,10 @@ prepBag = function(coi,B) {
 #' @return R the replication proportion for each inputted gene set
 #' @return seed the seed used for the random sampling, for reproducibility
 #' @examples
+#' data(pExample, geneSetListExample, modExample)
 #' hyperBag(pExample, geneSetListExample, modExample, alpha=0.05,B=20)
 hyperBag = function(exprsMat, geneSetList, mod, alpha=0.05,
-	geneids = rownames(exprsMat),	geneSetUniverse=unique(geneids),
+	geneids = rownames(exprsMat), geneSetUniverse=unique(geneids),
 	coiIndex=2, B=100,seed=NULL) {
 	
 	if(ncol(exprsMat) != nrow(mod)) stop("The number of samples in the gene matrix does not match the model matrix.\n")
@@ -60,7 +63,6 @@ hyperBag = function(exprsMat, geneSetList, mod, alpha=0.05,
 	
 	ind = prepBag(mod[,coiIndex], B)
 
-	require(limma)
 	nullt = apply(ind, 2, function(i) {
 		fit = lmFit(exprsMat[,i], mod[i,])
 		eb = ebayes(fit)
@@ -95,14 +97,14 @@ hyperBag = function(exprsMat, geneSetList, mod, alpha=0.05,
 #' @param alpha the cutoff used for the hypergeometric test and for generating the replication proportion
 #' @param wilcoxTestAlternative the alternative test for the geneSetTest in the limma package
 #' @param geneids gene identifiers that correspond to the rows of the expression matrix
-#' @param geneSetUniverse vector of all gene ids in the universe
 #' @param coiIndex the index for the binary covariate of interest in the model matrix
 #' @param B the number of bagging iterations
 #' @param seed sets the seed for random sampling
-#' @seealso limma::geneSetTest
+#' @seealso \code{\link[limma]{geneSetTest}}
 #' @return R the replication proportion for each inputted gene set
 #' @return seed the seed used for the random sampling, for reproducibility
 #' @examples
+#' data(pExample, geneSetListExample, modExample)
 #' gseaBag(pExample, geneSetListExample, modExample, alpha=0.05,B=20)
 gseaBag = function(exprsMat, geneSetList, mod, alpha=0.05,
 	wilcoxTestAlternative="up",	geneids = rownames(exprsMat),
@@ -122,7 +124,6 @@ gseaBag = function(exprsMat, geneSetList, mod, alpha=0.05,
 	
 	ind = prepBag(mod[,coiIndex], B)
 		
-	require(limma)
 	nullt = apply(ind, 2, function(i) {
 		fit = lmFit(exprsMat[,i], mod[i,])
 		eb = ebayes(fit)

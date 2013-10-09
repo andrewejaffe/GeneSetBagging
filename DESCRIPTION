@@ -7,7 +7,7 @@ Author: Andrew Jaffe
 Depends:
     limma
 URL: Forthcoming
-Maintainer: Andrew Jaffe <andrewejaffe@gmail.com>
+Maintainer: Andrew Jaffe <andrew.jaffe@libd.org>
 Description: Performs gene set bagging algorithm for estimating the replication
     proportion in gene set analysis
 License: GPL-3
